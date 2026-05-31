@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MANALORE · Academy of Card Mastery</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+:root{
+  --ink:#0b0e12; --ink2:#0e1319; --panel:#141a21; --panel2:#181f29;
+  --line:#27313d; --line2:#33404e; --gold:#d9a850; --gold2:#f0d292; --glow:#caa24e;
+  --parch:#ece6d6; --muted:#8c97a5; --dim:#5c6675;
+  --W:#f3ecd6; --U:#5294d6; --B:#9a7bc4; --R:#d65a48; --G:#56a96e; --C:#c2bbac;
+  --up:#5fc28a; --dn:#df7261; --nav:86px; --bar:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(1100px 760px at 84% -12%, rgba(120,92,168,.12), transparent 56%),
+    radial-gradient(880px 680px at -8% 112%, rgba(217,168,80,.08), transparent 56%),
+    linear-gradient(180deg,var(--ink),var(--ink2));
+  color:var(--parch);font-family:'Spectral',serif;min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")}
+.shell{position:relative;z-index:1}
+.main{padding:0 14px 92px;max-width:580px;margin:0 auto}
+
+/* nav */
+.nav{position:fixed;left:0;right:0;bottom:0;height:var(--bar);z-index:60;display:flex;background:rgba(11,14,18,.9);backdrop-filter:blur(18px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--dim);transition:.16s;font-family:'IBM Plex Mono';font-size:8px;letter-spacing:.6px;text-transform:uppercase}
+.ni svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7}
+.ni.on{color:var(--gold2)}.ni.on svg{filter:drop-shadow(0 0 6px rgba(217,168,80,.55))}
+.navbrand{display:none}
+
+/* appbar */
+.appbar{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,rgba(11,14,18,.96),rgba(11,14,18,.75));backdrop-filter:blur(12px);padding:13px 0 11px;margin:0 -14px 10px;border-bottom:1px solid var(--line)}
+.appbar-in{padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.crest{width:36px;height:36px;flex:none}
+.brand h1{font-family:'Cinzel';font-weight:700;font-size:18px;letter-spacing:4px;color:var(--gold2);line-height:1}
+.brand p{font-family:'IBM Plex Mono';font-size:7.5px;color:var(--dim);letter-spacing:2.4px;text-transform:uppercase;margin-top:4px}
+.barright{display:flex;align-items:center;gap:10px}
+.status{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono';font-size:9px;color:var(--muted);letter-spacing:.8px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 8px var(--up);animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.refresh{width:34px;height:34px;border-radius:10px;border:1px solid var(--line2);background:rgba(255,255,255,.02);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.16s}
+.refresh:active{transform:rotate(180deg);color:var(--gold2)}
+.refresh svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+/* panels */
+.panel{display:none;animation:rise .4s cubic-bezier(.2,.8,.2,1)}
+.panel.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sec-h{font-family:'Cinzel';font-weight:600;font-size:16px;letter-spacing:1.5px;color:var(--gold2);margin-bottom:3px}
+.sec-s{font-family:'IBM Plex Mono';font-size:9.5px;color:var(--dim);letter-spacing:.8px;margin-bottom:15px}
+.block{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:15px;padding:17px}
+.block h4{font-family:'Cinzel';font-weight:600;font-size:11.5px;letter-spacing:1.5px;color:var(--gold2);margin-bottom:13px;text-transform:uppercase}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:20px;padding:22px 20px;margin-bottom:16px;
+  background:linear-gradient(135deg,rgba(217,168,80,.12),rgba(120,92,168,.09)),linear-gradient(180deg,var(--panel),var(--panel2))}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(217,168,80,.18),transparent 68%);pointer-events:none}
+.hero .eyebrow{font-family:'IBM Plex Mono';font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase}
+.hero h2{font-family:'Cinzel';font-weight:700;font-size:24px;line-height:1.16;color:var(--parch);margin:9px 0 8px;max-width:30ch}
+.hero p{font-size:14px;color:var(--muted);max-width:46ch;line-height:1.6}
+.hero .crestbig{position:absolute;right:16px;bottom:-22px;width:120px;height:120px;opacity:.16;pointer-events:none}
+
+/* ticker */
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;background:rgba(0,0,0,.2);margin:0 -14px 16px;position:relative}
+.ticker-track{display:inline-block;padding:8px 0;animation:scroll 60s linear infinite;font-family:'IBM Plex Mono';font-size:11.5px}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ti{display:inline-flex;align-items:center;gap:6px;margin:0 17px;color:var(--muted)}
+.ti b{color:var(--parch);font-weight:500}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* indices */
+.indices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.idx{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:13px}
+.idx .l{font-family:'IBM Plex Mono';font-size:8px;letter-spacing:1.4px;color:var(--dim);text-transform:uppercase}
+.idx .v{font-family:'IBM Plex Mono';font-size:21px;font-weight:600;color:var(--gold2);margin-top:6px}
+.idx .d{font-family:'IBM Plex Mono';font-size:10px;margin-top:3px}
+
+/* filters */
+.filters{margin-bottom:14px}
+.frow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:9px}
+.flabel{font-family:'IBM Plex Mono';font-size:8px;letter-spacing:1.4px;color:var(--dim);text-transform:uppercase;width:100%;margin-bottom:1px}
+.cpip{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono';font-weight:600;font-size:12px;transition:.15s;opacity:.4}
+.cpip.on{opacity:1;box-shadow:0 0 0 2px var(--gold)}
+.cpip.W{background:var(--W);color:#100b04}.cpip.U{background:var(--U);color:#fff}.cpip.B{background:var(--B);color:#fff}.cpip.R{background:var(--R);color:#fff}.cpip.G{background:var(--G);color:#fff}.cpip.C{background:var(--C);color:#100b04}
+.chip{font-family:'IBM Plex Mono';font-size:10.5px;padding:7px 11px;border:1px solid var(--line);border-radius:9px;color:var(--muted);cursor:pointer;background:rgba(255,255,255,.012);transition:.15s}
+.chip:active{color:var(--parch)}
+.chip.on{border-color:var(--gold);color:var(--gold2);background:rgba(217,168,80,.09)}
+.ftext{flex:1;min-width:150px;background:var(--ink);border:1px solid var(--line2);border-radius:10px;padding:9px 13px;color:var(--parch);font-family:'Spectral';font-size:14px;outline:none}
+.ftext:focus{border-color:var(--gold)}
+.count{font-family:'IBM Plex Mono';font-size:10px;color:var(--gold);letter-spacing:.5px;margin-left:auto}
+.prog{font-family:'IBM Plex Mono';font-size:10px;color:var(--dim);letter-spacing:.5px}
+
+/* card grid */
+.watch{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.wcard{border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;background:var(--panel);transition:.18s;position:relative}
+.wcard:active{transform:scale(.985)}
+@media(hover:hover){.wcard:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.45)}}
+.art-wrap{height:106px;overflow:hidden;position:relative;background:#0c1116}
+.art-wrap img{width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block}
+.art-wrap::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--panel))}
+.wcard .imp{position:absolute;top:8px;right:8px;font-family:'IBM Plex Mono';font-size:12.5px;font-weight:600;background:rgba(11,14,18,.86);border:1px solid var(--line2);border-radius:8px;padding:3px 8px;z-index:2}
+.wcard .body{padding:9px 12px 12px;margin-top:-22px;position:relative;z-index:2}
+.wcard .nm{font-size:13px;font-weight:500;line-height:1.2;min-height:31px}
+.wcard .row2{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.wcard .pr{font-family:'IBM Plex Mono';font-size:12.5px;color:var(--gold2)}
+.wcard .dl{font-family:'IBM Plex Mono';font-size:10.5px;font-weight:600}
+#sentinel{height:40px}
+
+/* pips */
+.pip{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;font-family:'IBM Plex Mono';font-size:9px;font-weight:600;color:#100b04;margin:0 1px;vertical-align:middle;flex:none}
+.pip.W{background:var(--W)}.pip.U{background:var(--U);color:#fff}.pip.B{background:var(--B);color:#fff}.pip.R{background:var(--R);color:#fff}.pip.G{background:var(--G);color:#fff}.pip.C,.pip.N{background:#cdc6b6}
+
+/* lookup */
+.lk-input{width:100%;background:var(--ink);border:1px solid var(--line2);border-radius:14px;padding:15px 16px 15px 44px;color:var(--parch);font-family:'Spectral';font-size:16px;outline:none;transition:.18s}
+.lk-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,168,80,.08)}
+.lk-wrap{position:relative;margin-bottom:8px}
+.lk-wrap::before{content:"⌕";position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:19px}
+.lk-hint{font-family:'IBM Plex Mono';font-size:9.5px;color:var(--dim);letter-spacing:.5px;margin-bottom:14px}
+.lk-list{display:flex;flex-direction:column;gap:9px}
+.lk-item{display:flex;align-items:center;gap:12px;padding:9px 11px;border:1px solid var(--line);border-radius:13px;background:var(--panel);cursor:pointer;transition:.14s}
+.lk-item:active{border-color:var(--gold)}
+@media(hover:hover){.lk-item:hover{border-color:var(--gold);transform:translateX(3px)}}
+.lk-item .th{width:46px;height:46px;border-radius:9px;overflow:hidden;flex:none;background:#0c1116;border:1px solid var(--line)}
+.lk-item .th img{width:100%;height:100%;object-fit:cover;object-position:center 18%}
+.lk-item .info{flex:1;min-width:0}
+.lk-item .nm{font-size:14.5px;font-weight:500;line-height:1.2}
+.lk-item .ty{font-family:'IBM Plex Mono';font-size:9.5px;color:var(--dim);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lk-item .rt{text-align:right;flex:none}
+.lk-item .rt .pr{font-family:'IBM Plex Mono';font-size:13px;color:var(--gold2)}
+.lk-item .rt .im{font-family:'IBM Plex Mono';font-size:9px;color:var(--muted);margin-top:3px}
+
+/* card sheet */
+.backbtn{display:inline-flex;align-items:center;gap:7px;font-family:'IBM Plex Mono';font-size:11px;letter-spacing:1px;color:var(--muted);background:none;border:none;cursor:pointer;padding:4px 0;margin-bottom:12px}
+.backbtn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+.intel-grid{display:grid;grid-template-columns:1fr;gap:18px;align-items:start}
+.cardframe img{width:100%;max-width:300px;margin:0 auto;border-radius:16px;display:block;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.legal{margin-top:12px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.legal .badge{font-family:'IBM Plex Mono';font-size:8.5px;padding:4px 8px;border-radius:6px;border:1px solid var(--line);color:var(--muted);text-transform:uppercase}
+.legal .badge.ok{border-color:rgba(95,194,138,.4);color:var(--up)}
+.verdict{background:linear-gradient(135deg,rgba(217,168,80,.1),rgba(120,92,168,.07));border:1px solid var(--line2);border-left:3px solid var(--gold);border-radius:12px;padding:13px 15px;font-size:14.5px;line-height:1.6;color:var(--parch);margin-bottom:16px}
+.verdict .vt{font-family:'IBM Plex Mono';font-size:8.5px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+.detail-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.detail-head h2{font-family:'Cinzel';font-weight:600;font-size:22px;line-height:1.16}
+.ty{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);margin-top:9px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.statline{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0}
+.st{background:var(--ink);border:1px solid var(--line);border-radius:13px;padding:12px;text-align:center}
+.st .b{font-family:'IBM Plex Mono';font-size:20px;font-weight:600;color:var(--gold2)}
+.st .l{font-family:'IBM Plex Mono';font-size:8px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-top:5px}
+.st .s{font-size:11px;color:var(--muted);margin-top:3px}
+.cbar{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cbar .cl{font-family:'IBM Plex Mono';font-size:9.5px;color:var(--muted);width:78px;flex:none}
+.cbar .ct{flex:1;height:11px;background:#090c0f;border-radius:4px;overflow:hidden}
+.cbar .cf{height:100%;border-radius:4px;width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.cbar .cv{font-family:'IBM Plex Mono';font-size:9.5px;color:var(--gold2);width:30px;text-align:right;flex:none}
+.split{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px}
+.reason .ritem{display:flex;gap:11px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.55}
+.reason .ritem:last-child{border:none}
+.rtag{flex:none;font-family:'IBM Plex Mono';font-size:8px;font-weight:600;letter-spacing:1px;padding:3px 7px;border-radius:5px;height:fit-content;margin-top:3px}
+.rtag.p{background:rgba(95,194,138,.13);color:var(--up)}.rtag.m{background:rgba(223,114,97,.13);color:var(--dn)}.rtag.n{background:rgba(217,168,80,.12);color:var(--gold2)}
+
+/* market */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-family:'IBM Plex Mono';font-size:8.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);text-align:left;padding:10px 6px;border-bottom:1px solid var(--line);cursor:pointer}
+th:active{color:var(--gold2)}
+td{padding:10px 6px;border-bottom:1px solid rgba(39,49,61,.5)}
+tr.clk{cursor:pointer}tr.clk:active td{background:rgba(217,168,80,.06)}
+.usd{font-family:'IBM Plex Mono';color:var(--gold2)}
+.delta{font-family:'IBM Plex Mono';font-weight:600}.delta.up{color:var(--up)}.delta.dn{color:var(--dn)}
+.hidem{display:none}
+
+/* forge */
+.fg{margin-bottom:15px}
+.fg label{display:block;font-family:'IBM Plex Mono';font-size:8.5px;letter-spacing:1.3px;color:var(--dim);text-transform:uppercase;margin-bottom:8px}
+.mana-pick{display:flex;gap:8px}
+.mb{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono';font-weight:600;font-size:14px;transition:.15s;opacity:.38}
+.mb.on{opacity:1;box-shadow:0 0 0 2px var(--gold),0 0 16px rgba(217,168,80,.22)}
+.mb.W{background:var(--W);color:#100b04}.mb.U{background:var(--U);color:#fff}.mb.B{background:var(--B);color:#fff}.mb.R{background:var(--R);color:#fff}.mb.G{background:var(--G);color:#fff}
+.arch-pick{display:flex;gap:7px;flex-wrap:wrap}
+.fbtn{width:100%;font-family:'Cinzel';font-weight:600;letter-spacing:1.5px;font-size:14px;padding:15px;border-radius:13px;cursor:pointer;border:none;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#160f04;transition:.16s;margin-top:4px}
+.fbtn:active{filter:brightness(.95)}.fbtn:disabled{opacity:.5}
+.deckname{text-align:center;margin:6px 0 16px}
+.deckname .dn-eyebrow{font-family:'IBM Plex Mono';font-size:8.5px;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase}
+.deckname .dn-title{font-family:'Cinzel';font-weight:700;font-size:24px;color:var(--gold2);margin-top:6px;line-height:1.15}
+.deck-out{display:grid;grid-template-columns:1fr;gap:16px}
+.dgrp{margin-bottom:13px}
+.dgrp .gh{font-family:'IBM Plex Mono';font-size:9.5px;letter-spacing:1.3px;color:var(--gold2);text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between}
+.dcard{display:flex;align-items:center;gap:11px;padding:8px 11px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.012);margin-bottom:6px;font-size:13px;cursor:pointer}
+.dcard:active{border-color:var(--line2)}
+.dcard .th{width:36px;height:36px;border-radius:8px;overflow:hidden;flex:none;border:1px solid var(--line);background:#0c1116}
+.dcard .th img{width:100%;height:100%;object-fit:cover;object-position:center 18%}
+.dcard .qty{font-family:'IBM Plex Mono';font-weight:600;color:var(--gold2);flex:none}
+.dcard .nm{flex:1;line-height:1.2}
+.dcard .meta{font-family:'IBM Plex Mono';font-size:8.5px;color:var(--dim);text-align:right}
+
+/* states */
+.loader{text-align:center;padding:54px 20px}
+.spinner svg{animation:spin 3s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{font-family:'IBM Plex Mono';font-size:12px;color:var(--muted);letter-spacing:.5px;margin-top:15px}
+.skel{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+.sk{height:185px;border-radius:15px;background:linear-gradient(100deg,var(--panel) 30%,var(--panel2) 50%,var(--panel) 70%);background-size:200% 100%;animation:shim 1.4s infinite}@keyframes shim{to{background-position:-200% 0}}
+.err{text-align:center;padding:42px 18px;font-family:'IBM Plex Mono';font-size:12.5px;color:var(--dn);line-height:1.7}
+.tip{font-family:'Spectral';font-style:italic;font-size:13.5px;color:var(--dim);margin-top:10px}
+.empty{text-align:center;padding:46px 20px;color:var(--dim);font-style:italic;font-size:15px}
+
+/* academy */
+.codex p{font-size:14px;line-height:1.8;color:var(--muted);margin-bottom:13px}
+.codex p b{color:var(--parch);font-weight:500}
+.codex h3{font-family:'Cinzel';font-weight:600;font-size:13px;letter-spacing:1px;color:var(--gold2);margin:22px 0 9px}
+.lesson{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:6px 0 16px}
+.lcard{border:1px solid var(--line);border-radius:13px;padding:14px;background:linear-gradient(180deg,var(--panel),var(--panel2))}
+.lcard .lh{font-family:'Cinzel';font-weight:600;font-size:13px;color:var(--gold2);margin-bottom:6px}
+.lcard p{font-size:12.5px;line-height:1.55;color:var(--muted);margin:0}
+.formula{font-family:'IBM Plex Mono';font-size:11px;background:#080b0e;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:10px;padding:13px 15px;color:var(--gold2);line-height:1.8;margin:10px 0;overflow-x:auto;white-space:pre}
+.disc{font-family:'IBM Plex Mono';font-size:10px;color:var(--dim);line-height:1.7;border-top:1px dashed var(--line);padding-top:14px;margin-top:18px}
+.pill{display:inline-block;font-family:'IBM Plex Mono';font-size:9px;letter-spacing:.8px;padding:4px 9px;border-radius:20px;border:1px solid var(--line2);color:var(--muted);margin:3px 4px 3px 0}
+
+/* sets */
+.set-types{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 12px}
+.setlist{display:flex;flex-direction:column;gap:9px}
+.setrow{display:flex;align-items:center;gap:12px;padding:11px 13px;border:1px solid var(--line);border-radius:13px;background:var(--panel);cursor:pointer;transition:.14s}
+.setrow:active{border-color:var(--gold)}
+@media(hover:hover){.setrow:hover{border-color:var(--gold);transform:translateX(3px)}}
+.seticon{width:38px;height:38px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.seticon img{width:22px;height:22px;filter:brightness(0) invert(.82)}
+.seticon.big{width:54px;height:54px}.seticon.big img{width:32px;height:32px}
+.setrow .info{flex:1;min-width:0}
+.setrow .snm{font-size:15px;font-weight:500;line-height:1.2;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.setrow .smeta{font-family:'IBM Plex Mono';font-size:9.5px;color:var(--dim);margin-top:3px}
+.setrow .chev{width:18px;height:18px;stroke:var(--dim);fill:none;stroke-width:2;flex:none}
+.badge-new{font-family:'IBM Plex Mono';font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:5px;background:rgba(217,168,80,.15);color:var(--gold2);border:1px solid rgba(217,168,80,.4)}
+.set-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.set-head h2{font-family:'Cinzel';font-weight:600;font-size:21px;line-height:1.15}
+.set-head .smeta{font-family:'IBM Plex Mono';font-size:10px;color:var(--dim);margin-top:4px}
+.booster-note{font-family:'Spectral';font-style:italic;font-size:13px;color:var(--dim);margin:4px 0 14px;line-height:1.5}
+.selset{background:var(--ink);border:1px solid var(--line2);border-radius:10px;padding:10px 11px;color:var(--parch);font-family:'IBM Plex Mono';font-size:12px;outline:none;max-width:210px}
+.selset:focus{border-color:var(--gold)}
+.basket{display:flex;flex-wrap:wrap;gap:7px}
+.bchip{display:flex;align-items:center;gap:8px;border:1px solid var(--line2);border-radius:9px;padding:6px 10px;background:rgba(255,255,255,.02);font-size:12.5px}
+.bchip .x{cursor:pointer;color:var(--dim);font-family:'IBM Plex Mono';font-weight:600;font-size:11px}
+.bchip .x:active{color:var(--dn)}
+.wcard.picked{outline:2px solid var(--gold);outline-offset:-2px}
+.wcard .add{position:absolute;top:8px;left:8px;width:25px;height:25px;border-radius:8px;background:rgba(11,14,18,.86);border:1px solid var(--line2);color:var(--gold2);font-family:'IBM Plex Mono';font-weight:600;display:flex;align-items:center;justify-content:center;z-index:3;font-size:15px}
+.wcard.picked .add{background:var(--gold);color:#160f04;border-color:var(--gold)}
+@media(min-width:900px){
+  .main{max-width:1200px;padding-left:calc(var(--nav) + 28px);padding-right:28px;padding-bottom:40px}
+  .nav{top:0;bottom:0;right:auto;width:var(--nav);height:100vh;flex-direction:column;justify-content:flex-start;border-top:none;border-right:1px solid var(--line);padding:18px 0;gap:5px}
+  .nav .navbrand{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:20px}
+  .nav .navbrand .crest{width:40px;height:40px}
+  .ni{flex:none;padding:13px 0;font-size:7.5px}
+  .ni svg{width:23px;height:23px}
+  .appbar{margin:0 0 16px;padding-top:20px}
+  .appbar .brand{display:none}
+  .indices{grid-template-columns:repeat(4,1fr)}
+  .watch{grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:15px}
+  .hero h2{font-size:30px}
+  .intel-grid{grid-template-columns:300px 1fr;gap:26px}
+  .cardframe{position:sticky;top:92px}
+  .cardframe img{max-width:none}
+  .split{grid-template-columns:1fr 1fr}
+  .deck-out{grid-template-columns:1fr 300px}
+  .hidem{display:table-cell}
+  .ticker{margin-left:0;margin-right:0;border-radius:10px}
+  .lesson{grid-template-columns:repeat(4,1fr)}
+  .forge-row{display:flex;gap:22px;align-items:flex-end;flex-wrap:wrap}
+  .forge-row .fg{margin-bottom:0}
+  .fbtn{width:auto;padding:14px 32px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="nav" id="nav">
+    <div class="navbrand"><svg class="crest" viewBox="0 0 100 100" fill="none"><polygon points="50,6 90,28 90,72 50,94 10,72 10,28" stroke="#d9a850" stroke-width="3"/><path d="M35 62 L50 30 L65 62" stroke="#d9a850" stroke-width="3" fill="none"/><line x1="41" y1="50" x2="59" y2="50" stroke="#d9a850" stroke-width="3"/></svg></div>
+    <div class="ni on" data-tab="library"><svg viewBox="0 0 24 24"><path d="M4 5a1 1 0 011-1h5v16H5a1 1 0 01-1-1z"/><path d="M14 4h5a1 1 0 011 1v13a1 1 0 01-1 1h-5z"/></svg>Library</div>
+    <div class="ni" data-tab="lookup"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>Lookup</div>
+    <div class="ni" data-tab="sets"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="9" x2="9" y2="20"/></svg>Sets</div>
+    <div class="ni" data-tab="forge"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.2L21 11l-6.6 2.8L12 20l-2.4-6.2L3 11l6.6-2.8z"/></svg>Forge</div>
+    <div class="ni" data-tab="market"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 7-8"/><path d="M16 4h5v5"/></svg>Market</div>
+    <div class="ni" data-tab="academy"><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5-9 5z"/><path d="M7 11v5c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5v-5"/></svg>Academy</div>
+  </nav>
+
+  <main class="main">
+    <div class="appbar"><div class="appbar-in">
+      <div class="brand"><svg class="crest" viewBox="0 0 100 100" fill="none"><polygon points="50,6 90,28 90,72 50,94 10,72 10,28" stroke="#d9a850" stroke-width="3"/><path d="M35 62 L50 30 L65 62" stroke="#d9a850" stroke-width="3" fill="none"/><line x1="41" y1="50" x2="59" y2="50" stroke="#d9a850" stroke-width="3"/></svg>
+        <div><h1>MANALORE</h1><p>Academy of Card Mastery</p></div></div>
+      <div class="barright">
+        <div class="status"><span class="live-dot"></span><span id="statusText">CONNECTING</span></div>
+        <button class="refresh" id="refreshBtn" title="Refresh market"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-2.6-6.4"/><path d="M21 3v5h-5"/></svg></button>
+      </div>
+    </div></div>
+
+    <!-- LIBRARY -->
+    <section class="panel on" id="library">
+      <div class="hero">
+        <div class="eyebrow">Welcome to the Academy</div>
+        <h2>Read any card like a master.</h2>
+        <p>One thousand of the most-played cards, scored for power, demand and price outlook, in plain language for newcomers and full depth for veterans.</p>
+        <svg class="crestbig" viewBox="0 0 100 100" fill="none"><polygon points="50,6 90,28 90,72 50,94 10,72 10,28" stroke="#d9a850" stroke-width="2"/><path d="M35 62 L50 30 L65 62" stroke="#d9a850" stroke-width="2"/></svg>
+      </div>
+      <div class="ticker"><div class="ticker-track" id="ticker">Lighting the candles...</div></div>
+      <div class="indices" id="indices"></div>
+      <div class="filters">
+        <div class="frow"><span class="flabel">Color identity</span>
+          <div class="cpip W" data-c="W">W</div><div class="cpip U" data-c="U">U</div><div class="cpip B" data-c="B">B</div><div class="cpip R" data-c="R">R</div><div class="cpip G" data-c="G">G</div><div class="cpip C" data-c="C">◇</div></div>
+        <div class="frow" id="typeRow"><span class="flabel">Type</span></div>
+        <div class="frow" id="eraRow"><span class="flabel">Release era</span></div>
+        <div class="frow"><input class="ftext" id="filterText" placeholder="Filter these cards by name..."><span class="count" id="count">...</span></div>
+        <div class="frow" id="sortRow"><span class="flabel">Sort</span></div>
+      </div>
+      <div id="hallArea">
+        <div class="loader"><div class="spinner"><svg viewBox="0 0 100 100" width="44" height="44" fill="none"><polygon points="50,8 86,28 86,72 50,92 14,72 14,28" stroke="#d9a850" stroke-width="3"/></svg></div><p id="loadMsg">Opening the library...</p></div>
+        <div class="skel"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+      </div>
+      <div class="watch" id="hallGrid"></div>
+      <div id="sentinel"></div>
+    </section>
+
+    <!-- LOOKUP -->
+    <section class="panel" id="lookup">
+      <div class="sec-h">Lookup</div><div class="sec-s">Search any card ever printed</div>
+      <div class="lk-wrap"><input class="lk-input" id="lkInput" placeholder="Start typing a card name..." autocomplete="off"></div>
+      <div class="lk-hint">Suggestions appear as you type. Tap one to open its full sheet.</div>
+      <div class="lk-list" id="lkList"><div class="empty">Try "Ragavan", "Sol Ring", or "Counterspell".</div></div>
+    </section>
+
+    <!-- CARD SHEET -->
+    <section class="panel" id="card">
+      <button class="backbtn" id="backBtn"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> BACK TO LIBRARY</button>
+      <div id="cardBody"><div class="empty">Tap a card to open its intelligence sheet.</div></div>
+    </section>
+
+    <!-- SETS -->
+    <section class="panel" id="sets">
+      <div id="setsList">
+        <div class="sec-h">Sets &amp; Releases</div><div class="sec-s">Browse every release, newest first. Tap a set to explore its cards.</div>
+        <input class="ftext" id="setSearch" placeholder="Find a set or series, e.g. Avatar..." style="width:100%" autocomplete="off">
+        <div class="set-types" id="setTypes"></div>
+        <div style="display:flex;justify-content:flex-end"><span class="count" id="setCount">...</span></div>
+        <div class="setlist" id="setList"><div class="loader"><div class="spinner"><svg viewBox="0 0 100 100" width="40" height="40" fill="none"><polygon points="50,8 86,28 86,72 50,92 14,72 14,28" stroke="#d9a850" stroke-width="3"/></svg></div><p>Unrolling the catalogue...</p></div></div>
+      </div>
+      <div id="setDetail" style="display:none">
+        <button class="backbtn" id="setBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> ALL SETS</button>
+        <div id="setHead"></div>
+        <div class="frow" id="boosterToggle" style="margin-top:10px"><div class="chip on" data-b="all">All printings</div><div class="chip" data-b="play">Play Booster</div><div class="chip" data-b="collector">Collector Booster</div></div>
+        <div class="booster-note" id="boosterNote"></div>
+        <div id="setCardsArea"></div>
+      </div>
+    </section>
+
+    <!-- FORGE -->
+    <section class="panel" id="forge">
+      <div class="sec-h">Deck Builder</div><div class="sec-s">Pick a set, tap the cards you like, and we build the deck around them</div>
+      <div class="fg"><label>1 · Choose a card pool</label>
+        <select class="selset" id="forgeSet" style="max-width:280px"><option value="">Top cards (all sets)</option></select></div>
+      <div class="fg"><label>2 · Tap the cards you want</label>
+        <div class="booster-note" id="poolHint">Pick a set above to see its cards, then tap to add. Or just press Build and we choose for you.</div>
+        <div class="watch" id="poolGrid"></div></div>
+      <div class="fg"><label>Your deck · <span id="basketCount">0</span> cards</label>
+        <div class="basket" id="basket"><div class="empty" style="padding:14px">No cards yet. Tap cards above to add them.</div></div></div>
+      <div class="fg"><label>3 · Deck size</label>
+        <div class="arch-pick" id="sizePick"><div class="chip on" data-z="60">60 cards</div><div class="chip" data-z="100">Commander (100)</div></div></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="fbtn" id="forgeBtn" style="flex:1;min-width:160px">Build my deck</button>
+        <button class="chip" id="clearBasket">Clear picks</button></div>
+      <div id="forgeOut" style="margin-top:18px"></div>
+    </section>
+
+    <!-- MARKET -->
+    <section class="panel" id="market">
+      <div class="sec-h">Market</div><div class="sec-s">Demand-driven 90-day outlook across the library</div>
+      <div class="block" id="marketSummary" style="margin-bottom:16px"></div>
+      <div class="split" style="margin-bottom:16px">
+        <div class="block"><h4>Demand vs Value</h4><div id="scatter"></div><div class="tip">Each glyph is a card. Top-right is high demand meeting high price, the conviction zone.</div></div>
+        <div class="block"><h4>Biggest Movers · 90d</h4><div id="movers"></div></div>
+      </div>
+      <div class="block"><h4>Valuation Table · Top 100</h4><div style="overflow-x:auto"><table id="ptable">
+        <thead><tr><th data-s="name">Card</th><th data-s="demand">Dem</th><th data-s="price">Now</th><th data-s="proj">Proj</th><th data-s="delta">Move</th><th data-s="conf" class="hidem">Conf</th></tr></thead><tbody></tbody></table></div></div>
+    </section>
+
+    <!-- ACADEMY -->
+    <section class="panel codex" id="academy">
+      <div class="sec-h">The Academy</div><div class="sec-s">Learn how to read a card, from first lesson to deep theory</div>
+      <h3>First lessons</h3>
+      <div class="lesson">
+        <div class="lcard"><div class="lh">Importance</div><p>A 0 to 100 power score. Higher means the card shapes games and shows up in real decks. 80+ is a cornerstone.</p></div>
+        <div class="lcard"><div class="lh">Demand</div><p>How wanted a card is right now, driven by how often it actually gets played. High demand supports a higher price.</p></div>
+        <div class="lcard"><div class="lh">90d Outlook</div><p>Where the price could drift over three months if demand and supply hold. A guide, not a guarantee.</p></div>
+        <div class="lcard"><div class="lh">Supply</div><p>Cards that can never be reprinted have a price floor. Freely reprinted cards can fall when more copies are printed.</p></div>
+      </div>
+      <h3>How the score is built</h3>
+      <p>Every card is broken into six signals scored 0 to 10: <b>play-rate</b> (how often it shows up in real decks), <b>efficiency</b> (power for its cost), <b>card advantage</b>, <b>flexibility</b>, <b>format breadth</b>, and <b>keyword density</b>. Roles, threat, removal, counter, ramp and so on, are read straight from each card's rules text.</p>
+      <div class="formula">importance = 100 × ( 0.26·playRate + 0.18·efficiency + 0.14·cardAdvantage
+                       + 0.12·flexibility + 0.18·breadth + 0.12·keywords ) / 10</div>
+      <p>The bars on each card sheet show every signal's contribution, so you always see <b>why</b> a score landed where it did.</p>
+      <h3>Price outlook</h3>
+      <p>Demand drives price. The demand index is led by play-rate, then supply pressure pulls the other way.</p>
+      <div class="formula">demand   = 100 × ( 0.55·playRate + 0.25·flexibility + 0.20·cardAdvantage ) / 10
+drift/mo = (demand/100 − 0.50)·0.060 − (supplyRisk/10)·0.020
+proj90d  = priceNow × (1 + 3·drift/mo)</div>
+      <p>Confidence rises with play-rate (a thicker, more liquid market) and falls with supply risk. The outlook deliberately does <b>not</b> price in rules-update shocks or surprise reprints, the two largest sources of real-world error.</p>
+      <h3>How the Forge builds a deck</h3>
+      <p>The Forge studies the most-played lists for your archetype and colors, then <b>tunes</b> them: lower-impact cards are swapped for higher-importance picks the model rates above the field, fitted to a clean curve. It then names the deck from its colors and character. You get a real, legal skeleton you can build on, not a random pile.</p>
+      <div><span class="pill">For beginners &amp; pros</span><span class="pill">Plain-language reads</span><span class="pill">Real play-rate signal</span><span class="pill">Supply-aware pricing</span></div>
+      <div class="disc">Prices are aggregated market values for study, not a brokerage quote, and outlooks are not financial advice. The math is kept transparent so the logic stays auditable. Data refreshes each time you open or reload the Academy.</div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const API="https://api.scryfall.com";
+const TARGET=1000, BATCH=60;
+let POOL=[], FILTERED=[], shown=0, io=null, SEL=null;
+let sortKey="delta", sortDir=-1;
+let fColors=new Set(), fType=null, fSort="importance", fText="", fEra="all";
+const NOW_Y=new Date().getFullYear();
+const ERAS=[["all","All-time"],["new","Newest"],["recent","Last 3 yrs"],["modern","Modern era"],["throwback","Throwback"]];
+function cardYear(c){return c.released_at?+c.released_at.slice(0,4):0;}
+function eraQuery(key){return {all:"",new:`year>=${NOW_Y-1}`,recent:`year>=${NOW_Y-3}`,modern:"year>=2014",throwback:"year<=2010"}[key]||"";}
+function matchEra(c){const y=cardYear(c);if(!y)return fEra==="all";
+  if(fEra==="new")return y>=NOW_Y-1; if(fEra==="recent")return y>=NOW_Y-3;
+  if(fEra==="modern")return y>=2014; if(fEra==="throwback")return y<=2010; return true;}
+
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const fmtUSD=v=>v==null?"-":(v<10?("$"+v.toFixed(2)):("$"+Math.round(v).toLocaleString()));
+const enc=encodeURIComponent;
+function imgUri(c,k){const u=c.image_uris||(c.card_faces&&c.card_faces[0]&&c.card_faces[0].image_uris);return u?u[k]:null;}
+function oracle(c){return (c.oracle_text||(c.card_faces?c.card_faces.map(f=>f.oracle_text||"").join(" "):"")||"").toLowerCase();}
+function typeLine(c){return c.type_line||(c.card_faces&&c.card_faces[0].type_line)||"";}
+function manaCost(c){return c.mana_cost||(c.card_faces&&c.card_faces[0].mana_cost)||"";}
+function manaPips(mc){if(!mc)return"";return (mc.match(/\{[^}]+\}/g)||[]).map(s=>{const v=s.replace(/[{}/]/g,"");const cl=["W","U","B","R","G"].includes(v)?v:"N";return `<span class="pip ${cl}">${v.length>2?v[0]:v}</span>`;}).join("");}
+const FMTS=["standard","pioneer","modern","legacy","vintage","commander","pauper"];
+function legalFormats(c){const L=c.legalities||{};return FMTS.filter(f=>L[f]==="legal");}
+
+function feats(c){const t=oracle(c),tl=typeLine(c).toLowerCase(),cmc=c.cmc||0,rank=c.edhrec_rank||45000;
+  const playRank=clamp(10-Math.log10(rank+1)*2.05,0,10);const ubiq=clamp(legalFormats(c).length*1.55,0,10);
+  const kw=clamp((c.keywords||[]).length*1.6+(/\bmodal|choose one|escape|flashback\b/.test(t)?2:0),0,10);
+  let eff=clamp(9.5-cmc*1.1,1,10); if(/instant/.test(tl))eff=clamp(eff+0.8,0,10);
+  let cardAdv=0; if(/draw (a|two|three|four|\w+) cards?/.test(t))cardAdv+=6; if(/search your library/.test(t))cardAdv+=3;
+  if(/create .*token/.test(t))cardAdv+=2; if(/whenever .* dies|whenever .* enters/.test(t))cardAdv+=2; cardAdv=clamp(cardAdv,0,10);
+  let flex=clamp(4+(c.color_identity?(2-c.color_identity.length):0)+(/instant/.test(tl)?2:0)+(/any (color|type)|choose|modal/.test(t)?2:0),0,10);
+  let tempo=clamp((/haste|flash|flying|prowess/.test(t)?3:0)+(10-cmc)*0.55+(/creature/.test(tl)?1.5:0),0,10);
+  return {playRank,ubiq,kw,eff,cardAdv,flex,tempo,cmc,rank};}
+function reprintRisk(c){let rr={common:8,uncommon:7,rare:5,mythic:3,special:2,bonus:2}[c.rarity]??5;if(c.reserved)rr=0;return rr;}
+const W_IMP={playRank:.26,eff:.18,cardAdv:.14,flex:.12,ubiq:.18,kw:.12};
+function importance(c){const f=c._f;let v=0;for(const k in W_IMP)v+=W_IMP[k]*f[k];return Math.round(v/10*100);}
+function contributions(c){const f=c._f;const map=[["Play-rate","playRank","#d9a850"],["Efficiency","eff","#d65a48"],["Card adv","cardAdv","#5294d6"],["Breadth","ubiq","#9a7bc4"],["Flexibility","flex","#56a96e"],["Keywords","kw","#f0d292"]];
+  return map.map(([l,k,col])=>({l,col,v:+(W_IMP[k]*f[k]*10).toFixed(1)})).sort((a,b)=>b.v-a.v);}
+function demand(c){const f=c._f;return Math.round((0.55*f.playRank+0.25*f.flex+0.20*f.cardAdv)/10*100);}
+function priceNow(c){const p=c.prices||{};return p.usd?+p.usd:(p.usd_foil?+p.usd_foil:(p.eur?+p.eur*1.08:null));}
+function driftMo(c){return (demand(c)/100-0.5)*0.060 - (reprintRisk(c)/10)*0.020;}
+function projPrice(c){const p=priceNow(c);return p==null?null:p*(1+3*driftMo(c));}
+function deltaPct(c){const p=priceNow(c),pj=projPrice(c);return (p==null||!p)?0:(pj-p)/p*100;}
+function confidence(c){const f=c._f;return Math.round(clamp(45+f.playRank*5-reprintRisk(c)*1.5,45,95));}
+function priceSeries(c){const p=priceNow(c)||0,d=driftMo(c);return [0,1,2,3].map(m=>+(p*(1+m*d)).toFixed(2));}
+function role(c){const t=oracle(c),tl=typeLine(c).toLowerCase();
+  if(tl.includes("land"))return"Land"; if(/counter target (spell|ability|creature spell)/.test(t))return"Counter";
+  if(/destroy target|exile target|deals? \d+ damage to (any|target)|return target.*to (its|their) own|fight/.test(t))return"Removal";
+  if(/add \{|untap target land|search your library for .*(land|basic)/.test(t))return"Ramp";
+  if(/draw (a|two|three|four|\w+) cards?|whenever you draw/.test(t))return"Card Advantage";
+  if(/discard|each opponent sacrifices|target player sacrifices|can't|loses the game|skip (your|their)/.test(t))return"Disruption";
+  if(tl.includes("planeswalker"))return"Engine"; if(tl.includes("artifact")||tl.includes("enchantment"))return"Engine";
+  if(tl.includes("creature"))return"Threat"; return"Spell";}
+function tierWord(im){return im>=80?"a cornerstone":im>=65?"a staple":im>=50?"a solid role-player":"a niche pick";}
+function plainRead(c){const im=importance(c),d=deltaPct(c);
+  const base={[true]:""}; const t=im>=80?"A cornerstone of competitive play. You will see this card everywhere, and demand keeps it valuable.":im>=65?"A widely played staple. A safe, useful card to own and a dependable include.":im>=50?"A solid role-player that shines in the right shell, though it is not an every-deck card.":"A niche or casual pick. Its value is situational and depends on the deck.";
+  const dir=d>=2?"Our model leans bullish on its price over the next 90 days.":d<=-2?"Our model leans cautious on its price over the next 90 days.":"Our model sees its price holding roughly steady.";
+  return `This is ${tierWord(im)}. ${t} ${dir}`;}
+function reasoning(c){const f=c._f,out=[],fmts=legalFormats(c);
+  if(fmts.length>=4)out.push(["p",`Legal in ${fmts.length} formats (${fmts.slice(0,4).join(", ")}…). Demand rests on a broad base, not one metagame.`]);
+  else if(fmts.length>=2)out.push(["p",`Played across ${fmts.join(", ")}, a reliable demand floor.`]);
+  else if(fmts.length===1)out.push(["m",`Legal in one format only, so value leans on that format staying relevant.`]);
+  else out.push(["n",`Limited tournament legality; value is driven by casual and collector demand.`]);
+  if(c.edhrec_rank&&c.edhrec_rank<800)out.push(["p",`Ranked #${c.edhrec_rank.toLocaleString()} among the most-played cards in the game.`]);
+  else if(c.edhrec_rank)out.push(["n",`Solid play volume (rank #${c.edhrec_rank.toLocaleString()}), but not top-tier ubiquity.`]);
+  if(f.eff>=8.5)out.push(["p",`Elite rate for its cost (mana value ${f.cmc}), the efficiency that decides what is playable.`]);
+  if(f.cardAdv>=6)out.push(["p",`Generates card advantage on its own, exactly what grindy decks pay up for.`]);
+  if(f.flex>=8)out.push(["p",`Very flexible: low color commitment and broad use, so it slots into many decks.`]);
+  if(c.reserved)out.push(["p",`Can never be reprinted, so supply is locked. A structural floor under the price.`]);
+  else if(reprintRisk(c)>=7)out.push(["m",`High supply risk (${c.rarity}). New printings can expand supply and push the price down.`]);
+  const p=priceNow(c); if(p&&p>=150)out.push(["n",`Premium price (${fmtUSD(p)}) shrinks the buyer pool, so moves are slower but stickier.`]);
+  out.push(["n",`Functional role read from the rules text: ${role(c)}.`]); return out;}
+
+function enrich(c){c._f=feats(c);return c;}
+function cacheGet(name){return POOL.find(c=>c.name===name)||EXTRA.get(name);}
+const EXTRA=new Map();
+
+/* ---------- data loading: fresh every visit ---------- */
+async function loadLibrary(){
+  POOL=[]; EXTRA.clear();
+  let url=`${API}/cards/search?q=${enc("-is:digital -t:basic legal:commander")}&order=edhrec&unique=cards`;
+  let firstDone=false;
+  while(url && POOL.length<TARGET){
+    let d; try{const r=await fetch(url); if(!r.ok)throw new Error("feed "+r.status); d=await r.json();}catch(e){if(!POOL.length)throw e; break;}
+    (d.data||[]).forEach(c=>{if(c.name&&!c.digital){enrich(c);POOL.push(c);}});
+    $("#loadMsg").textContent=`Gathering the library... ${Math.min(POOL.length,TARGET)} / ${TARGET}`;
+    if(!firstDone&&POOL.length){ firstDone=true; $("#statusText").textContent="LIVE"; finishLoad(); }
+    if(POOL.length>=TARGET)break;
+    url=d.has_more?d.next_page:null;
+    if(url)await sleep(110);
+  }
+  POOL=POOL.slice(0,TARGET);
+  buildSortRow(); buildTypeRow(); buildEraRow();
+  applyFilters(); renderIndices(); renderTicker();
+}
+function finishLoad(){
+  const ld=$("#hallArea"); if(ld)ld.style.display="none";
+  buildSortRow(); buildTypeRow(); buildEraRow(); applyFilters(); renderIndices(); renderTicker();
+  const t=new Date(); const stamp=t.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  $("#statusText").textContent="LIVE · "+stamp;
+}
+
+/* ---------- filters + infinite scroll ---------- */
+const TYPES=["All","Creature","Instant","Sorcery","Artifact","Enchantment","Planeswalker","Land"];
+const SORTS=[["importance","Power"],["demand","Demand"],["priceHi","Price ↑"],["priceLo","Price ↓"],["mover","Movers"],["name","A-Z"]];
+function buildTypeRow(){const r=$("#typeRow");if(r.dataset.built)return;r.dataset.built="1";
+  r.insertAdjacentHTML("beforeend",TYPES.map(t=>`<div class="chip ${t==='All'?'on':''}" data-t="${t}">${t}</div>`).join(""));
+  $$("#typeRow .chip").forEach(ch=>ch.onclick=()=>{$$("#typeRow .chip").forEach(x=>x.classList.remove("on"));ch.classList.add("on");fType=ch.dataset.t==="All"?null:ch.dataset.t;applyFilters();});}
+function buildSortRow(){const r=$("#sortRow");if(r.dataset.built)return;r.dataset.built="1";
+  r.insertAdjacentHTML("beforeend",SORTS.map(([k,l])=>`<div class="chip ${k==='importance'?'on':''}" data-k="${k}">${l}</div>`).join(""));
+  $$("#sortRow .chip").forEach(ch=>ch.onclick=()=>{$$("#sortRow .chip").forEach(x=>x.classList.remove("on"));ch.classList.add("on");fSort=ch.dataset.k;applyFilters();});}
+function buildEraRow(){const r=$("#eraRow");if(r.dataset.built)return;r.dataset.built="1";
+  r.insertAdjacentHTML("beforeend",ERAS.map(([k,l])=>`<div class="chip ${k==='all'?'on':''}" data-e="${k}">${l}</div>`).join(""));
+  $$("#eraRow .chip").forEach(ch=>ch.onclick=()=>{$$("#eraRow .chip").forEach(x=>x.classList.remove("on"));ch.classList.add("on");fEra=ch.dataset.e;applyFilters();});}
+$$(".cpip").forEach(p=>p.onclick=()=>{const c=p.dataset.c;fColors.has(c)?fColors.delete(c):fColors.add(c);p.classList.toggle("on");applyFilters();});
+$("#filterText").oninput=e=>{fText=e.target.value.trim().toLowerCase();applyFilters();};
+
+function matchColor(c){if(!fColors.size)return true;const ci=c.color_identity||[];
+  if(fColors.has("C")&&ci.length===0)return true;
+  const picked=[...fColors].filter(x=>x!=="C");
+  if(!picked.length)return ci.length===0;
+  return ci.length>0 && ci.every(x=>picked.includes(x));}
+function matchType(c){if(!fType)return true;return typeLine(c).toLowerCase().includes(fType.toLowerCase());}
+function matchText(c){if(!fText)return true;return c.name.toLowerCase().includes(fText);}
+function applyFilters(){
+  FILTERED=POOL.filter(c=>matchColor(c)&&matchType(c)&&matchText(c)&&matchEra(c));
+  const s={importance:(a,b)=>importance(b)-importance(a),demand:(a,b)=>demand(b)-demand(a),
+    priceHi:(a,b)=>(priceNow(b)||0)-(priceNow(a)||0),priceLo:(a,b)=>(priceNow(a)||0)-(priceNow(b)||0),
+    mover:(a,b)=>Math.abs(deltaPct(b))-Math.abs(deltaPct(a)),name:(a,b)=>a.name.localeCompare(b.name)}[fSort];
+  FILTERED.sort(s);
+  shown=0; $("#hallGrid").innerHTML=""; renderMore();
+  if(io)io.disconnect();
+  io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)renderMore();}),{rootMargin:"700px"});
+  io.observe($("#sentinel"));
+  $("#count").textContent=`${FILTERED.length.toLocaleString()} cards`;}
+function scoreColor(v){return v>=80?"#d9a850":v>=65?"#9a7bc4":v>=50?"#5294d6":"#7a8494";}
+function wcard(c){const im=importance(c),d=deltaPct(c),art=imgUri(c,"art_crop")||"";
+  return `<div class="wcard" data-n="${enc(c.name)}"><div class="art-wrap"><img loading="lazy" src="${art}" alt=""></div><span class="imp" style="color:${scoreColor(im)}">${im}</span>
+   <div class="body"><div class="nm">${c.name}</div><div class="row2"><span class="pr">${fmtUSD(priceNow(c))}</span><span class="dl ${d>=0?'delta up':'delta dn'}">${d>=0?'▲':'▼'}${Math.abs(d).toFixed(1)}%</span></div></div></div>`;}
+function renderMore(){if(shown>=FILTERED.length)return;
+  const slice=FILTERED.slice(shown,shown+BATCH);
+  $("#hallGrid").insertAdjacentHTML("beforeend",slice.map(wcard).join(""));
+  shown+=slice.length;
+  if(shown>=FILTERED.length&&io)io.disconnect();}
+$("#hallGrid").addEventListener("click",e=>{const card=e.target.closest(".wcard");if(card)openCard(decodeURIComponent(card.dataset.n));});
+
+/* ---------- nav / panels ---------- */
+const NAVS=["library","lookup","forge","market","academy"];
+function goPanel(name){$$(".panel").forEach(x=>x.classList.toggle("on",x.id===name));
+  $$(".ni").forEach(x=>x.classList.toggle("on",x.dataset.tab===name));
+  if(name==="market")renderMarket();
+  if(name==="sets"){loadSets().then(()=>{renderSetsList();populateForgeSets();}); if(!curSet)showSetsList();}
+  if(name==="forge"){if(!poolCards.length)defaultPool();renderBasket();}
+  window.scrollTo({top:0,behavior:"smooth"});}
+$$(".ni").forEach(t=>t.onclick=()=>goPanel(t.dataset.tab));
+$("#backBtn").onclick=()=>goPanel(cardOrigin||"library");
+$("#refreshBtn").onclick=()=>{$("#statusText").textContent="REFRESHING";boot();};
+
+/* ---------- indices / ticker ---------- */
+function renderTicker(){const items=[...POOL].sort((a,b)=>Math.abs(deltaPct(b))-Math.abs(deltaPct(a))).slice(0,18);
+  const html=items.map(c=>{const d=deltaPct(c),up=d>=0;return `<span class="ti"><b>${c.name.split(",")[0]}</b> ${fmtUSD(priceNow(c))} <span style="color:${up?'var(--up)':'var(--dn)'}">${up?'▲':'▼'}${Math.abs(d).toFixed(1)}%</span></span>`;}).join("");
+  $("#ticker").innerHTML=html+html;}
+function renderIndices(){if(!POOL.length)return;const avgDem=Math.round(POOL.reduce((a,c)=>a+demand(c),0)/POOL.length);
+  const gain=[...POOL].sort((a,b)=>deltaPct(b)-deltaPct(a))[0],loss=[...POOL].sort((a,b)=>deltaPct(a)-deltaPct(b))[0];const reserved=POOL.filter(c=>c.reserved).length;
+  $("#indices").innerHTML=`<div class="idx"><div class="l">Avg Demand</div><div class="v">${avgDem}</div><div class="d" style="color:var(--muted)">${POOL.length.toLocaleString()} cards</div></div>
+   <div class="idx"><div class="l">Top Gainer</div><div class="v" style="font-size:14px">${gain.name.split(",")[0]}</div><div class="d delta up">▲ ${deltaPct(gain).toFixed(1)}%</div></div>
+   <div class="idx"><div class="l">Top Faller</div><div class="v" style="font-size:14px">${loss.name.split(",")[0]}</div><div class="d delta dn">▼ ${Math.abs(deltaPct(loss)).toFixed(1)}%</div></div>
+   <div class="idx"><div class="l">Supply-Locked</div><div class="v">${reserved}</div><div class="d" style="color:var(--muted)">never reprinted</div></div>`;}
+
+/* ---------- card sheet ---------- */
+function ring(v){const r=42,c=2*Math.PI*r,off=c*(1-v/100),col=scoreColor(v);
+  return `<svg width="106" height="106" viewBox="0 0 112 112"><circle cx="56" cy="56" r="${r}" stroke="#090c0f" stroke-width="10" fill="none"/><circle cx="56" cy="56" r="${r}" stroke="${col}" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c}" transform="rotate(-90 56 56)" style="animation:dash 1s .2s cubic-bezier(.2,.8,.2,1) forwards"/>
+   <text x="56" y="54" text-anchor="middle" fill="${col}" font-family="IBM Plex Mono" font-size="27" font-weight="600">${v}</text><text x="56" y="71" text-anchor="middle" fill="#5c6675" font-family="IBM Plex Mono" font-size="8" letter-spacing="1.5">POWER</text>
+   <style>@keyframes dash{to{stroke-dashoffset:${off}}}</style></svg>`;}
+function radar(c){const f=c._f,ax=[["EFF","eff"],["CA","cardAdv"],["FLEX","flex"],["TMP","tempo"],["BRD","ubiq"],["PLAY","playRank"]];const cx=105,cy=100,R=66,N=ax.length;let grid="";
+  for(let g=1;g<=4;g++){let p=[];for(let i=0;i<N;i++){const a=-Math.PI/2+i*2*Math.PI/N;p.push(`${cx+Math.cos(a)*R*g/4},${cy+Math.sin(a)*R*g/4}`);}grid+=`<polygon points="${p.join(" ")}" fill="none" stroke="#27313d"/>`;}
+  let lab="",poly=[];ax.forEach(([l,k],i)=>{const a=-Math.PI/2+i*2*Math.PI/N,v=f[k]/10;poly.push(`${cx+Math.cos(a)*R*v},${cy+Math.sin(a)*R*v}`);lab+=`<text x="${cx+Math.cos(a)*(R+14)}" y="${cy+Math.sin(a)*(R+14)+3}" text-anchor="middle" fill="#8c97a5" font-family="IBM Plex Mono" font-size="8.5">${l}</text>`;});
+  return `<svg width="210" height="200" viewBox="0 0 210 200">${grid}<polygon points="${poly.join(" ")}" fill="rgba(217,168,80,.2)" stroke="#d9a850" stroke-width="2"/>${lab}</svg>`;}
+function priceChart(c){const s=priceSeries(c),conf=confidence(c),w=300,h=140,pad=10; if(!priceNow(c))return `<div class="tip">No market price reported for this card.</div>`;
+  const mn=Math.min(...s)*0.9,mx=Math.max(...s)*1.1,rng=mx-mn||1;const X=i=>pad+(i/3)*(w-2*pad),Y=v=>h-pad-((v-mn)/rng)*(h-2*pad);
+  const line=s.map((v,i)=>`${X(i)},${Y(v)}`).join(" ");const band=(1-conf/100);const top=s.map((v,i)=>`${X(i)},${Y(v*(1+band*i*.32))}`),bot=s.map((v,i)=>`${X(i)},${Y(v*(1-band*i*.32))}`).reverse();
+  const up=s[3]>=s[0],col=up?"var(--up)":"var(--dn)";const lbl=["Now","+30d","+60d","+90d"];
+  return `<svg width="100%" viewBox="0 0 ${w} ${h+16}"><polygon points="${top.concat(bot).join(" ")}" fill="${col}" opacity=".1"/><polyline points="${line}" fill="none" stroke="${col}" stroke-width="2.5"/>
+   ${s.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="${col}"/><text x="${X(i)}" y="${h+12}" text-anchor="middle" fill="#5c6675" font-family="IBM Plex Mono" font-size="8.5">${lbl[i]}</text>`).join("")}</svg>`;}
+let cardOrigin="library";
+function openCardObj(c){if(!c)return;const cur=document.querySelector(".panel.on");cardOrigin=(cur&&cur.id!=="card")?cur.id:"library";SEL=c;goPanel("card");renderCard();}
+function openCard(name){openCardObj(cacheGet(name));}
+function renderCard(){const c=SEL,im=importance(c),dm=demand(c),p=priceNow(c),pj=projPrice(c),d=deltaPct(c);const con=contributions(c),mx=Math.max(...con.map(x=>x.v));const img=imgUri(c,"normal"),fmts=legalFormats(c);
+  $("#cardBody").innerHTML=`<div class="intel-grid"><div class="cardframe">${img?`<img src="${img}" alt="${c.name}">`:`<div class="block">No image</div>`}<div class="legal">${FMTS.map(f=>`<span class="badge ${fmts.includes(f)?'ok':''}">${f.slice(0,3)}</span>`).join("")}</div></div>
+   <div><div class="detail-head"><div><h2>${c.name}</h2><div class="ty">${manaPips(manaCost(c))} ${typeLine(c)} · ${c.rarity}${c.reserved?' · <span style="color:var(--gold2)">SUPPLY-LOCKED</span>':''}</div></div><div>${ring(im)}</div></div>
+     <div class="verdict"><div class="vt">In plain words</div>${plainRead(c)}</div>
+     <div class="statline"><div class="st"><div class="b">${dm}</div><div class="l">Demand</div><div class="s">${dm>=75?'High':dm>=55?'Steady':'Soft'}</div></div>
+       <div class="st"><div class="b">${fmtUSD(p)}</div><div class="l">Market</div><div class="s">${c.prices&&c.prices.usd?'USD':'est.'}</div></div>
+       <div class="st"><div class="b" style="color:${d>=0?'var(--up)':'var(--dn)'}">${d>=0?'+':''}${d.toFixed(1)}%</div><div class="l">90d</div><div class="s">→ ${fmtUSD(pj)}</div></div></div>
+     <div class="split"><div class="block"><h4>Why it scores this way</h4>${con.map(x=>`<div class="cbar"><div class="cl">${x.l}</div><div class="ct"><div class="cf" style="background:${x.col}"></div></div><div class="cv">+${x.v}</div></div>`).join("")}<div class="tip">Each bar is a signal's contribution to the power score.</div></div>
+       <div class="block" style="text-align:center"><h4>Signal Profile</h4>${radar(c)}</div></div>
+     <div class="block" style="margin-top:16px"><h4>Price Outlook</h4>${priceChart(c)}<div class="tip">Confidence ${confidence(c)}%. The shaded band widens with uncertainty.</div></div>
+     <div class="block" style="margin-top:16px"><h4>Analyst Read</h4><div class="reason">${reasoning(c).map(([t,x])=>`<div class="ritem"><span class="rtag ${t}">${t==='p'?'STRONG':t==='m'?'CAUTION':'NOTE'}</span><span>${x}</span></div>`).join("")}</div></div>
+     <div style="margin-top:16px"><button class="fbtn" id="seedBtn">＋ Add to my deck builder</button></div></div></div>`;
+  requestAnimationFrame(()=>{$$("#cardBody .cf").forEach((el,i)=>{el.style.width=(con[i].v/mx*100)+"%";});});
+  $("#seedBtn").onclick=()=>seedForge(c);}
+
+/* ---------- lookup ---------- */
+let lkTimer=null;
+$("#lkInput").oninput=e=>{const q=e.target.value.trim();clearTimeout(lkTimer);
+  if(q.length<2){$("#lkList").innerHTML=`<div class="empty">Try "Ragavan", "Sol Ring", or "Counterspell".</div>`;return;}
+  $("#lkList").innerHTML=`<div class="loader" style="padding:30px"><div class="spinner"><svg viewBox="0 0 100 100" width="34" height="34" fill="none"><polygon points="50,8 86,28 86,72 50,92 14,72 14,28" stroke="#d9a850" stroke-width="3"/></svg></div></div>`;
+  lkTimer=setTimeout(async()=>{
+    let names=[]; try{const r=await fetch(`${API}/cards/autocomplete?q=${enc(q)}`);if(r.ok){names=(await r.json()).data||[];}}catch(e){}
+    names=names.slice(0,8);
+    if(!names.length){$("#lkList").innerHTML=`<div class="empty">No cards match that name yet.</div>`;return;}
+    let cards=[]; try{const r=await fetch(`${API}/cards/collection`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({identifiers:names.map(n=>({name:n}))})});if(r.ok)cards=(await r.json()).data||[];}catch(e){}
+    cards.forEach(c=>{enrich(c);EXTRA.set(c.name,c);});
+    if(!cards.length){$("#lkList").innerHTML=names.map(n=>`<div class="lk-item" data-q="${enc(n)}"><div class="info"><div class="nm">${n}</div></div></div>`).join("");bindLk();return;}
+    $("#lkList").innerHTML=cards.map(c=>{const th=imgUri(c,"art_crop")||"";return `<div class="lk-item" data-n="${enc(c.name)}"><div class="th"><img loading="lazy" src="${th}" alt=""></div>
+      <div class="info"><div class="nm">${c.name}</div><div class="ty">${typeLine(c)}</div></div>
+      <div class="rt"><div class="pr">${fmtUSD(priceNow(c))}</div><div class="im">PWR ${importance(c)}</div></div></div>`;}).join("");
+    bindLk();
+  },230);};
+function bindLk(){$$("#lkList .lk-item").forEach(el=>el.onclick=async()=>{
+  if(el.dataset.n){openCard(decodeURIComponent(el.dataset.n));return;}
+  const nm=decodeURIComponent(el.dataset.q||"");if(!nm)return;
+  try{const r=await fetch(`${API}/cards/named?fuzzy=${enc(nm)}`);if(r.ok){const c=await r.json();enrich(c);EXTRA.set(c.name,c);openCard(c.name);}}catch(e){}});}
+
+/* ---------- market ---------- */
+function renderMarket(){if(!POOL.length)return;
+  const totalVal=POOL.reduce((a,c)=>a+(priceNow(c)||0),0);
+  const bull=POOL.filter(c=>deltaPct(c)>0).length, bear=POOL.length-bull;
+  const hi=[...POOL].sort((a,b)=>(priceNow(b)||0)-(priceNow(a)||0))[0];
+  $("#marketSummary").innerHTML=`<h4>Market Pulse</h4><div style="font-size:14px;line-height:1.65;color:var(--muted)">Across ${POOL.length.toLocaleString()} tracked cards, the model reads <b style="color:var(--up)">${bull}</b> trending up and <b style="color:var(--dn)">${bear}</b> trending down over 90 days. Total tracked value is <b style="color:var(--gold2)">${fmtUSD(totalVal)}</b>, with ${hi.name} the priciest single card at ${fmtUSD(priceNow(hi))}.</div>`;
+  const sample=[...POOL].sort((a,b)=>demand(b)-demand(a)).slice(0,120);
+  const w=320,h=200,pad=36,maxP=Math.max(...sample.map(c=>priceNow(c)||1));
+  const X=d=>pad+(d/100)*(w-pad-10),Y=p=>h-pad-(Math.log10((p||1)+1)/Math.log10(maxP+1))*(h-pad-10);
+  const pts=sample.map(c=>{const d=demand(c),p=priceNow(c)||1,ci=c.color_identity||[];const col=ci.length>1?"#d9a850":({W:"#f3ecd6",U:"#5294d6",B:"#9a7bc4",R:"#d65a48",G:"#56a96e"})[ci[0]]||"#c2bbac";const up=deltaPct(c)>=0;
+    return `<circle cx="${X(d)}" cy="${Y(p)}" r="4" fill="${col}" opacity=".82" stroke="${up?'#5fc28a':'#df7261'}" stroke-width="1.2"><title>${c.name} · ${fmtUSD(priceNow(c))}</title></circle>`;}).join("");
+  $("#scatter").innerHTML=`<svg width="100%" viewBox="0 0 ${w} ${h+6}"><line x1="${pad}" y1="${h-pad}" x2="${w-6}" y2="${h-pad}" stroke="#27313d"/><line x1="${pad}" y1="8" x2="${pad}" y2="${h-pad}" stroke="#27313d"/>
+   <text x="${(w+pad)/2}" y="${h+1}" text-anchor="middle" fill="#5c6675" font-family="IBM Plex Mono" font-size="8.5">DEMAND →</text><text x="12" y="${h/2}" fill="#5c6675" font-family="IBM Plex Mono" font-size="8.5" transform="rotate(-90 12 ${h/2})">PRICE (log) →</text>${pts}</svg>`;
+  const movers=[...POOL].sort((a,b)=>Math.abs(deltaPct(b))-Math.abs(deltaPct(a))).slice(0,8);
+  $("#movers").innerHTML=movers.map(c=>{const d=deltaPct(c);return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #27313d;cursor:pointer" data-n="${enc(c.name)}"><span style="font-size:13px">${c.name}</span><span class="delta ${d>=0?'up':'dn'}">${d>=0?'▲':'▼'} ${Math.abs(d).toFixed(1)}%</span></div>`;}).join("");
+  $$("#movers [data-n]").forEach(el=>el.onclick=()=>openCard(decodeURIComponent(el.dataset.n)));
+  renderPTable();}
+function renderPTable(){let rows=POOL.map(c=>({c,name:c.name,demand:demand(c),price:priceNow(c)||0,proj:projPrice(c)||0,delta:deltaPct(c),conf:confidence(c)}));
+  rows.sort((a,b)=>sortKey==="name"?sortDir*a.name.localeCompare(b.name):sortDir*(a[sortKey]-b[sortKey]));
+  rows=rows.slice(0,100);
+  $("#ptable tbody").innerHTML=rows.map(r=>`<tr class="clk" data-n="${enc(r.name)}"><td>${manaPips(manaCost(r.c))} ${r.name}</td><td><b style="font-family:IBM Plex Mono;color:${scoreColor(r.demand)}">${r.demand}</b></td><td class="usd">${fmtUSD(priceNow(r.c))}</td><td class="usd">${fmtUSD(r.proj)}</td><td><span class="delta ${r.delta>=0?'up':'dn'}">${r.delta>=0?'+':''}${r.delta.toFixed(1)}%</span></td><td class="hidem" style="font-family:IBM Plex Mono;color:var(--muted)">${r.conf}%</td></tr>`).join("");
+  $$("#ptable tbody tr").forEach(tr=>tr.onclick=()=>openCard(decodeURIComponent(tr.dataset.n)));}
+$$("#ptable th").forEach(th=>{if(th.dataset.s)th.onclick=()=>{if(sortKey===th.dataset.s)sortDir*=-1;else{sortKey=th.dataset.s;sortDir=th.dataset.s==="name"?1:-1;}renderPTable();};});
+
+/* ---------- deck builder ---------- */
+const GUILDS={W:"Mono-White",U:"Mono-Blue",B:"Mono-Black",R:"Mono-Red",G:"Mono-Green",WU:"Azorius",WB:"Orzhov",WR:"Boros",WG:"Selesnya",UB:"Dimir",UR:"Izzet",UG:"Simic",BR:"Rakdos",BG:"Golgari",RG:"Gruul",WUB:"Esper",WUR:"Jeskai",WUG:"Bant",WBR:"Mardu",WBG:"Abzan",WRG:"Naya",UBR:"Grixis",UBG:"Sultai",URG:"Temur",BRG:"Jund",WUBR:"Yore-Tiller",WUBG:"Witch-Maw",WURG:"Ink-Treader",WBRG:"Dune-Brood",UBRG:"Glint-Eye",WUBRG:"Rainbow"};
+const DPREF=["Emberfang","Skyward","Tidecaller","Gravebound","Sunlit","Stormwrought","Verdant","Ashen","Gilded","Umbral","Radiant","Thornclad","Frostbound","Bloodsworn","Eternal","Wildfire","Hallowed","Duskborn","Ironscale","Mistveil"];
+const DNOUN=["Doctrine","Onslaught","Covenant","Gambit","Vanguard","Ascendancy","Crusade","Resonance","Procession","Uprising","Sovereignty","Reckoning","Symphony","Conclave","Paradigm"];
+function guildName(cols){const key=["W","U","B","R","G"].filter(c=>cols.includes(c)).join("");return GUILDS[key]||(key||"Colorless");}
+function deckName(cols,arch){const g=guildName(cols);const seed=(arch+cols.join("")).split("").reduce((a,c)=>a+c.charCodeAt(0),0);const p=DPREF[seed%DPREF.length],n=DNOUN[(seed*7)%DNOUN.length];return `${g} ${p} ${n}`;}
+const ARCH_OF={Threat:"Aggro",Removal:"Control",Counter:"Control","Card Advantage":"Midrange",Engine:"Midrange",Ramp:"Ramp",Disruption:"Midrange",Land:"Midrange",Spell:"Midrange"};
+
+let BASKET=[], poolCards=[], deckSize=60, forgeUsed=[];
+function basketHas(c){return BASKET.some(x=>x.name===c.name);}
+function addToBasket(c){if(c&&!basketHas(c))BASKET.push(c);renderBasket();}
+function toggleBasket(c){if(basketHas(c))BASKET=BASKET.filter(x=>x.name!==c.name);else BASKET.push(c);renderBasket();syncPoolPicked();}
+function renderBasket(){const b=$("#basket");if(!b)return;$("#basketCount").textContent=BASKET.length;
+  if(!BASKET.length){b.innerHTML=`<div class="empty" style="padding:14px">No cards yet. Tap cards above to add them.</div>`;return;}
+  b.innerHTML=BASKET.map((c,i)=>`<span class="bchip">${c.name}<span class="x" data-i="${i}">✕</span></span>`).join("");
+  $$("#basket .x").forEach(x=>x.onclick=()=>{BASKET.splice(+x.dataset.i,1);renderBasket();syncPoolPicked();});}
+function poolCard(c,i){const im=importance(c),art=imgUri(c,"art_crop")||"",picked=basketHas(c);
+  return `<div class="wcard ${picked?'picked':''}" data-si="${i}"><div class="add">${picked?'✓':'+'}</div><div class="art-wrap"><img loading="lazy" src="${art}" alt=""></div><span class="imp" style="color:${scoreColor(im)}">${im}</span>
+   <div class="body"><div class="nm">${c.name}</div><div class="row2"><span class="pr">${fmtUSD(priceNow(c))}</span><span class="dl" style="color:var(--muted)">${role(c)}</span></div></div></div>`;}
+function renderPoolGrid(hint){if(hint!=null)$("#poolHint").textContent=hint;
+  if(!poolCards.length){$("#poolGrid").innerHTML=`<div class="empty">No cards to show yet.</div>`;return;}
+  $("#poolGrid").innerHTML=poolCards.map((c,i)=>poolCard(c,i)).join("");
+  $$("#poolGrid .wcard").forEach(el=>el.onclick=()=>toggleBasket(poolCards[+el.dataset.si]));}
+function syncPoolPicked(){$$("#poolGrid .wcard").forEach(el=>{const c=poolCards[+el.dataset.si];const p=basketHas(c);el.classList.toggle("picked",p);const a=el.querySelector(".add");if(a)a.textContent=p?'✓':'+';});}
+function defaultPool(){if(POOL.length){poolCards=[...POOL].sort((a,b)=>importance(b)-importance(a)).slice(0,60);renderPoolGrid("Top cards across all sets. Tap to add, or choose a set above.");}}
+function renderForgeControls(){if(!poolCards.length)defaultPool();renderBasket();}
+function populateForgeSets(){const sel=$("#forgeSet");if(!sel||!SETS.length||sel.dataset.built)return;sel.dataset.built="1";
+  const useful=SETS.filter(s=>["expansion","core","commander","masters","draft_innovation"].includes(s.set_type)&&s.card_count>=40).slice(0,160);
+  sel.innerHTML=`<option value="">Top cards (all sets)</option>`+useful.map(s=>`<option value="${s.code}">${s.name}</option>`).join("");}
+const fLoader=`<div class="loader"><div class="spinner"><svg viewBox="0 0 100 100" width="40" height="40" fill="none"><polygon points="50,8 86,28 86,72 50,92 14,72 14,28" stroke="#d9a850" stroke-width="3"/></svg></div><p>Drawing the cards...</p></div>`;
+async function onForgeSetChange(){const code=$("#forgeSet").value;
+  if(!code){defaultPool();return;}
+  $("#poolGrid").innerHTML=fLoader;$("#poolHint").textContent="Loading set...";
+  let cards=[];try{const r=await fetch(`${API}/cards/search?q=${enc("e:"+code+" -t:basic")}&order=usd&unique=cards`);if(r.ok)cards=((await r.json()).data||[]);}catch(e){}
+  poolCards=cards.slice(0,150).map(enrich);
+  renderPoolGrid(poolCards.length?"Tap the cards you want from this set, then Build.":"No cards found for this set.");}
+function seedForge(c){addToBasket(c);goPanel("forge");syncPoolPicked();}
+function buildDeck(){const btn=$("#forgeBtn");btn.disabled=true;btn.textContent="Building…";
+  const poolName=$("#forgeSet").selectedOptions[0]?$("#forgeSet").selectedOptions[0].textContent:"";
+  const fillPool=poolCards.length?poolCards:[...POOL];
+  const lands=deckSize>=100?37:24;const nonlandTarget=deckSize-lands;
+  let used=[...BASKET];const usedNames=new Set(used.map(c=>c.name));
+  fillPool.filter(c=>!usedNames.has(c.name)&&!typeLine(c).toLowerCase().includes("land")).sort((a,b)=>importance(b)-importance(a)).forEach(c=>{if(used.length<nonlandTarget){used.push(c);usedNames.add(c.name);}});
+  if(!used.length){btn.disabled=false;btn.textContent="Build my deck";$("#forgeOut").innerHTML=`<div class="empty">Pick at least one card, or choose a set, then build.</div>`;return;}
+  forgeUsed=used;
+  const colSet=new Set();used.forEach(c=>(c.color_identity||[]).forEach(x=>colSet.add(x)));const cols=["W","U","B","R","G"].filter(x=>colSet.has(x));
+  const roleCount={};used.forEach(c=>{const r=role(c);roleCount[r]=(roleCount[r]||0)+1;});
+  const topRole=Object.entries(roleCount).sort((a,b)=>b[1]-a[1])[0];const archLabel=ARCH_OF[topRole?topRole[0]:"Threat"]||"Midrange";
+  const byRole={};used.forEach((c,idx)=>{const r=role(c)==="Spell"?"Other":role(c);(byRole[r]=byRole[r]||[]).push(idx);});
+  const order=["Threat","Removal","Counter","Card Advantage","Disruption","Ramp","Engine","Land","Other"];
+  const groups=order.filter(r=>byRole[r]).map(r=>({r,idxs:byRole[r].sort((a,b)=>importance(used[b])-importance(used[a]))}));
+  const buckets=[0,0,0,0,0,0];used.forEach(c=>buckets[Math.min(5,c.cmc||0)]++);const mb=Math.max(...buckets,1);
+  const curve=`<svg width="100%" viewBox="0 0 260 116">${buckets.map((v,i)=>{const x=14+i*40,bh=v/mb*80;return `<rect x="${x}" y="${96-bh}" width="26" height="${bh}" rx="3" fill="#d9a850" opacity="${.5+v/mb*.5}"/><text x="${x+13}" y="110" text-anchor="middle" fill="#5c6675" font-family="IBM Plex Mono" font-size="8.5">${i===5?'5+':i}</text><text x="${x+13}" y="${90-bh}" text-anchor="middle" fill="#f0d292" font-family="IBM Plex Mono" font-size="8.5">${v||''}</text>`;}).join("")}</svg>`;
+  const value=used.reduce((a,c)=>a+(priceNow(c)||0),0);const avgImp=Math.round(used.reduce((a,c)=>a+importance(c),0)/used.length);
+  const name=deckName(cols,archLabel);const stars=[...used].sort((a,b)=>importance(b)-importance(a)).slice(0,3);const bn=BASKET.length;
+  $("#forgeOut").innerHTML=`<div class="deckname"><div class="dn-eyebrow">Your deck</div><div class="dn-title">${name}</div></div>
+   <div class="block" style="margin-bottom:14px;border-left:3px solid var(--gold);font-size:13.5px;color:var(--muted)">Built ${bn?("around your <b style=\"color:var(--parch)\">"+bn+"</b> chosen card"+(bn>1?"s":"")):"from the top cards"}${poolName?(" from "+poolName):""}, then completed with the highest-power cards that fit your colors (${guildName(cols)}).</div>
+   <div class="deck-out"><div>${groups.map(g=>`<div class="dgrp"><div class="gh"><span>${g.r}</span><span>${g.idxs.length}</span></div>${g.idxs.map(idx=>{const c=used[idx];return `<div class="dcard" data-fi="${idx}"><div class="th"><img loading="lazy" src="${imgUri(c,"art_crop")||""}" alt=""></div><span class="qty">1×</span><span class="nm">${c.name}</span><span class="meta">PWR ${importance(c)}<br>${fmtUSD(priceNow(c))}</span></div>`;}).join("")}</div>`).join("")}
+     <div class="dgrp"><div class="gh"><span>Lands</span><span>${lands}</span></div><div class="dcard"><span class="qty">${lands}×</span><span class="nm">Lands for your colors (${cols.join("")||"C"})</span></div></div></div>
+   <div><div class="block" style="text-align:center;margin-bottom:14px"><h4>Mana Curve</h4>${curve}</div>
+     <div class="block" style="text-align:center;margin-bottom:14px"><div style="font-family:IBM Plex Mono;font-size:26px;font-weight:600;color:var(--gold2)">${used.length+lands}</div><div style="font-family:IBM Plex Mono;font-size:9px;color:var(--dim);letter-spacing:1.4px">CARDS · ${used.length} SPELLS / ${lands} LANDS</div><div style="font-family:IBM Plex Mono;font-size:12px;color:var(--up);margin-top:9px">≈ ${fmtUSD(value)} spells · avg PWR ${avgImp}</div></div>
+     <div class="block"><h4>The plan</h4><div style="font-size:13px;line-height:1.62;color:var(--muted)">This plays as a ${archLabel.toLowerCase()} deck. Standouts: ${stars.map(c=>c.name).join(", ")}. Tap any card to see its full read.</div></div></div></div>`;
+  $$("#forgeOut .dcard[data-fi]").forEach(el=>el.onclick=()=>openCardObj(forgeUsed[+el.dataset.fi]));
+  btn.disabled=false;btn.textContent="Build my deck";window.scrollTo({top:document.querySelector('#forgeOut').offsetTop-60,behavior:'smooth'});}
+$("#forgeSet").onchange=onForgeSetChange;
+$$("#sizePick .chip").forEach(ch=>ch.onclick=()=>{$$("#sizePick .chip").forEach(x=>x.classList.remove("on"));ch.classList.add("on");deckSize=+ch.dataset.z;});
+$("#clearBasket").onclick=()=>{BASKET=[];renderBasket();syncPoolPicked();};
+$("#forgeBtn").onclick=buildDeck;
+
+
+/* ---------- sets & releases ---------- */
+let SETS=[], setType="All", curSet=null, boosterMode="all", setCardsArr=[];
+const SET_TYPES=["All","Expansion","Commander","Masters","Other"];
+function setBucket(s){const t=s.set_type;if(["expansion","core"].includes(t))return"Expansion";if(t==="commander")return"Commander";if(["masters","draft_innovation"].includes(t))return"Masters";return"Other";}
+async function loadSets(){if(SETS.length)return SETS;
+  try{const r=await fetch(`${API}/sets`);if(!r.ok)return [];const d=await r.json();
+    SETS=(d.data||[]).filter(s=>!s.digital&&s.card_count>0).sort((a,b)=>(b.released_at||"").localeCompare(a.released_at||""));}catch(e){SETS=[];}
+  return SETS;}
+function buildSetTypes(){const r=$("#setTypes");if(r.dataset.built)return;r.dataset.built="1";
+  r.innerHTML=SET_TYPES.map(t=>`<div class="chip ${t==='All'?'on':''}" data-st="${t}">${t}</div>`).join("");
+  $$("#setTypes .chip").forEach(ch=>ch.onclick=()=>{$$("#setTypes .chip").forEach(x=>x.classList.remove("on"));ch.classList.add("on");setType=ch.dataset.st;renderSetsList();});}
+function renderSetsList(){if(!SETS.length)return;buildSetTypes();
+  const term=($("#setSearch").value||"").trim().toLowerCase();
+  let list=SETS.filter(s=>setType==="All"||setBucket(s)===setType);
+  if(term)list=list.filter(s=>s.name.toLowerCase().includes(term)||(s.code||"").toLowerCase().includes(term));
+  const today=new Date().toISOString().slice(0,10);
+  $("#setCount").textContent=`${list.length} sets`;
+  $("#setList").innerHTML=list.slice(0,80).map(s=>{
+    const days=s.released_at?(Date.now()-new Date(s.released_at).getTime())/86400000:9999;
+    const tag=(s.released_at&&s.released_at>today)?'<span class="badge-new">UPCOMING</span>':((days>=0&&days<95)?'<span class="badge-new">NEW</span>':'');
+    return `<div class="setrow" data-code="${s.code}"><div class="seticon"><img src="${s.icon_svg_uri}" alt=""></div>
+      <div class="info"><div class="snm">${s.name} ${tag}</div><div class="smeta">${(s.code||'').toUpperCase()} · ${s.released_at||'TBA'} · ${s.card_count} cards · ${setBucket(s)}</div></div>
+      <svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>`;}).join("");
+  $$("#setList .setrow").forEach(el=>el.onclick=()=>openSet(el.dataset.code));}
+function showSetsList(){$("#setsList").style.display="";$("#setDetail").style.display="none";}
+function showSetDetail(){$("#setsList").style.display="none";$("#setDetail").style.display="";}
+function openSet(code){curSet=SETS.find(s=>s.code===code);if(!curSet)return;boosterMode="all";
+  $$("#boosterToggle .chip").forEach(x=>x.classList.toggle("on",x.dataset.b==="all"));
+  $("#setHead").innerHTML=`<div class="set-head"><div class="seticon big"><img src="${curSet.icon_svg_uri}" alt=""></div><div><h2>${curSet.name}</h2><div class="smeta">${(curSet.code||'').toUpperCase()} · released ${curSet.released_at||'TBA'} · ${curSet.card_count} cards</div></div></div>`;
+  showSetDetail();window.scrollTo({top:0,behavior:"smooth"});loadSetCards();}
+$("#setBack").onclick=()=>showSetsList();
+$("#setSearch").oninput=()=>renderSetsList();
+$$("#boosterToggle .chip").forEach(ch=>ch.onclick=()=>{$$("#boosterToggle .chip").forEach(x=>x.classList.remove("on"));ch.classList.add("on");boosterMode=ch.dataset.b;loadSetCards();});
+async function loadSetCards(){const code=curSet.code;let q,order,uniq,note;
+  if(boosterMode==="play"){q=`e:${code} -is:showcase -is:extendedart -is:borderless -is:fullart -is:serialized`;order="edhrec";uniq="cards";note="Standard versions, the cards as they appear in Play Boosters, most-played first.";}
+  else if(boosterMode==="collector"){q=`e:${code} (is:showcase or is:extendedart or is:borderless or is:fullart or is:serialized or is:etched)`;order="usd";uniq="prints";note="Special treatments from Collector Boosters: showcase, borderless, extended-art, full-art, etched and serialized variants, priciest first.";}
+  else{q=`e:${code}`;order="usd";uniq="prints";note="Every printing in this set, most valuable first.";}
+  $("#boosterNote").textContent=note;
+  $("#setCardsArea").innerHTML=`<div class="loader"><div class="spinner"><svg viewBox="0 0 100 100" width="40" height="40" fill="none"><polygon points="50,8 86,28 86,72 50,92 14,72 14,28" stroke="#d9a850" stroke-width="3"/></svg></div><p>Drawing the cards...</p></div>`;
+  let cards=[];try{const r=await fetch(`${API}/cards/search?q=${enc(q)}&order=${order}&unique=${uniq}`);if(r.ok){cards=((await r.json()).data||[]);}}catch(e){}
+  if(!cards.length){$("#setCardsArea").innerHTML=`<div class="empty">No ${boosterMode==='collector'?'Collector Booster':boosterMode==='play'?'Play Booster':''} cards found for this set.</div>`;return;}
+  setCardsArr=cards.slice(0,400).map(enrich);
+  $("#setCardsArea").innerHTML=`<div class="watch">${setCardsArr.map((c,i)=>setCard(c,i)).join("")}</div>`;
+  $$("#setCardsArea .wcard").forEach(el=>el.onclick=()=>openCardObj(setCardsArr[+el.dataset.si]));}
+function cardTreatment(c){const fe=c.frame_effects||[],pt=c.promo_types||[],fin=c.finishes||[];
+  if(c.border_color==="borderless")return"BORDERLESS";if(fe.includes("showcase"))return"SHOWCASE";if(fe.includes("extendedart"))return"EXTENDED";if(c.full_art)return"FULL ART";if(pt.includes("serialized"))return"SERIAL";if(fin.includes("etched"))return"ETCHED";return"";}
+function setCard(c,i){const im=importance(c),art=imgUri(c,"art_crop")||"",treat=cardTreatment(c);
+  return `<div class="wcard" data-si="${i}"><div class="art-wrap"><img loading="lazy" src="${art}" alt=""></div><span class="imp" style="color:${scoreColor(im)}">${im}</span>
+   <div class="body"><div class="nm">${c.name}</div><div class="row2"><span class="pr">${fmtUSD(priceNow(c))}</span>${treat?`<span class="dl" style="color:var(--gold2);font-size:8.5px;letter-spacing:.5px">${treat}</span>`:`<span class="dl" style="color:var(--muted)">${c.rarity?c.rarity[0].toUpperCase():''}</span>`}</div></div></div>`;}
+
+
+/* ---------- boot ---------- */
+async function boot(){
+  $("#hallArea").style.display=""; $("#hallGrid").innerHTML=""; $("#ticker").textContent="Lighting the candles...";
+  renderForgeControls();
+  try{ await loadLibrary(); loadSets().then(()=>{renderSetsList();populateForgeSets();}); }
+  catch(e){ $("#statusText").textContent="OFFLINE";
+    $("#hallArea").innerHTML=`<div class="err">Could not reach the live card service from this view.<br><br>MANALORE loads live card data, prices and images in your browser. If it is blocked here, open the file in a normal browser tab and it will load.</div>`; }
+}
+boot();
+</script>
+</body>
+</html>
